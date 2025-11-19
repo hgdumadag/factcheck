@@ -87,16 +87,25 @@ st.markdown("""
 @st.cache_resource
 def get_modules():
     """Initialize and cache all processing modules"""
-    return (
-        SimpleInputProcessor(),
-        ClaimExtractor(),
-        MVPSearchEngine(),
-        ContextAnalyzer(),
-        SimpleVerifier(),
-    )
+    try:
+        return (
+            SimpleInputProcessor(),
+            ClaimExtractor(),
+            MVPSearchEngine(),
+            ContextAnalyzer(),
+            SimpleVerifier(),
+        )
+    except Exception as e:
+        st.error(f"Error initializing modules: {str(e)}")
+        st.info("Please ensure DASHSCOPE_API_KEY is configured in Streamlit secrets")
+        # Return None to signal initialization failure
+        return None
 
 try:
-    input_processor, claim_extractor, search_engine, context_analyzer, verifier = get_modules()
+    modules = get_modules()
+    if modules is None:
+        st.stop()
+    input_processor, claim_extractor, search_engine, context_analyzer, verifier = modules
 except Exception as e:
     st.error(f"Error initializing modules: {str(e)}")
     st.info("Please ensure DASHSCOPE_API_KEY is configured in Streamlit secrets or .env file")
