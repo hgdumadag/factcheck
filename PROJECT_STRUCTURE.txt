@@ -1,0 +1,218 @@
+Fact-Checker MVP - Project Structure
+=====================================
+
+Fact_check2/
+│
+├── app.py                          # Main FastAPI application
+├── requirements.txt                # Python dependencies
+├── .env.example                    # Environment variables template
+├── .env                           # Your actual environment variables (create from .env.example)
+├── .gitignore                     # Git ignore rules
+│
+├── modules/                       # Core backend modules
+│   ├── __init__.py               # Package initializer
+│   ├── qwen_client.py            # Alibaba Qwen 3 LLM client
+│   ├── input_processor.py        # Handles text/URL/image inputs
+│   ├── claim_extractor.py        # Extracts claims using Qwen
+│   ├── search_engine.py          # Multi-source search (DuckDuckGo, Google)
+│   ├── context_analyzer.py       # Context restoration (KEY FEATURE)
+│   └── verifier.py               # Confidence scoring and verdict
+│
+├── frontend/                      # React frontend application
+│   ├── package.json              # Node.js dependencies
+│   ├── public/
+│   │   └── index.html           # HTML template
+│   └── src/
+│       ├── index.js             # React entry point
+│       ├── index.css            # Global styles
+│       ├── App.js               # Main React component
+│       └── App.css              # Component styles
+│
+├── uploads/                       # Temporary image uploads (auto-created)
+│
+├── setup.bat                      # Windows setup script
+├── setup.sh                       # macOS/Linux setup script
+├── start_backend.bat              # Windows backend launcher
+├── start_frontend.bat             # Windows frontend launcher
+│
+├── test_example.py                # Test script
+├── README.md                      # Project overview
+├── SETUP_GUIDE.md                 # Detailed setup instructions
+└── PROJECT_STRUCTURE.txt          # This file
+
+
+Key Components Explained
+========================
+
+Backend (Python/FastAPI)
+------------------------
+
+1. app.py
+   - FastAPI application setup
+   - CORS configuration
+   - API endpoints:
+     * GET  / (health check)
+     * POST /api/factcheck/text
+     * POST /api/factcheck/url
+     * POST /api/factcheck/image
+
+2. modules/qwen_client.py
+   - Wrapper for Alibaba Qwen 3 LLM
+   - Methods:
+     * chat() - General chat completion
+     * extract_json_response() - Get structured JSON
+     * simple_prompt() - Quick prompts
+
+3. modules/input_processor.py
+   - Processes three input types:
+     * Text: Direct processing
+     * URL: Web scraping (newspaper3k + BeautifulSoup)
+     * Image: OCR with Tesseract
+
+4. modules/claim_extractor.py
+   - Uses Qwen to extract:
+     * Main claim
+     * Key facts (checkable/non-checkable)
+     * Named entities
+     * Dates mentioned
+
+5. modules/search_engine.py
+   - Multi-source search:
+     * DuckDuckGo (free, no API key)
+     * Google Custom Search (optional)
+     * Fact-check site search
+   - Returns structured evidence
+
+6. modules/context_analyzer.py
+   - **KEY INNOVATION**
+   - Identifies missing context
+   - Generates full picture summary
+   - Extracts timeline from evidence
+   - Uses Qwen for analysis
+
+7. modules/verifier.py
+   - Calculates confidence scores:
+     * Source agreement
+     * Source quality
+     * Context completeness
+     * Fact-check coverage
+   - Determines final verdict
+
+
+Frontend (React)
+----------------
+
+1. App.js
+   - Main application component
+   - Sub-components:
+     * VerdictCard - Shows verdict & confidence
+     * MissingContextCard - Context alert (KEY FEATURE)
+     * TimelineView - Event timeline
+     * SourcesList - Evidence sources
+     * ScoresCard - Detailed metrics
+
+2. App.css
+   - Modern gradient design
+   - Responsive layout
+   - Color-coded verdicts
+   - Smooth animations
+
+
+API Flow
+========
+
+1. User submits input (text/URL/image)
+   ↓
+2. Input Processor extracts text
+   ↓
+3. Claim Extractor identifies claims (Qwen)
+   ↓
+4. Search Engine finds evidence (multi-source)
+   ↓
+5. Context Analyzer identifies missing context (Qwen)
+   ↓
+6. Verifier calculates scores & verdict
+   ↓
+7. Results returned to frontend
+   ↓
+8. User sees verdict + context + evidence
+
+
+Environment Variables
+====================
+
+Required:
+- DASHSCOPE_API_KEY: Alibaba Qwen API key
+
+Optional:
+- GOOGLE_API_KEY: Google Custom Search API key
+- GOOGLE_CSE_ID: Google Custom Search Engine ID
+- API_HOST: Backend host (default: 0.0.0.0)
+- API_PORT: Backend port (default: 8000)
+
+
+Dependencies
+============
+
+Backend:
+- fastapi: Web framework
+- uvicorn: ASGI server
+- dashscope: Alibaba Qwen SDK
+- requests: HTTP library
+- beautifulsoup4: HTML parsing
+- newspaper3k: Article extraction
+- pytesseract: OCR
+- Pillow: Image processing
+- duckduckgo-search: Search API
+- dateparser: Date parsing
+- pydantic: Data validation
+
+Frontend:
+- react: UI framework
+- axios: HTTP client
+- react-scripts: Build tools
+
+
+MVP Features Implemented
+========================
+
+✓ Multi-input support (text, URL, image)
+✓ LLM-powered claim extraction (Qwen)
+✓ Multi-source search verification
+✓ Context restoration (missing context identification)
+✓ Timeline extraction
+✓ Confidence scoring
+✓ Fact-check site integration
+✓ Modern responsive UI
+✓ Real-time processing
+
+
+Future Enhancement Ideas
+========================
+
+- Multi-language support
+- Browser extension
+- Social media integration
+- User authentication
+- Claim history/database
+- Collaborative fact-checking
+- API rate limiting
+- Caching layer
+- Advanced NLP analysis
+- Image manipulation detection
+- Video fact-checking
+- Real-time monitoring
+
+
+Development Notes
+=================
+
+- MVP designed for hackathon speed
+- Scalable architecture for future growth
+- Clean separation of concerns
+- Modular component design
+- Error handling throughout
+- Graceful fallbacks for failures
+
+
+Powered by Alibaba Qwen 3 LLM 🚀
