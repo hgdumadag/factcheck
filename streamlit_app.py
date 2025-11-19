@@ -18,12 +18,19 @@ from modules.verifier import SimpleVerifier
 
 # Load local .env for development; on Streamlit Cloud, use app secrets
 load_dotenv()
-if "DASHSCOPE_API_KEY" not in os.environ and hasattr(st, 'secrets') and "DASHSCOPE_API_KEY" in st.secrets:
-    os.environ["DASHSCOPE_API_KEY"] = st.secrets["DASHSCOPE_API_KEY"]
-if "GOOGLE_API_KEY" not in os.environ and hasattr(st, 'secrets') and "GOOGLE_API_KEY" in st.secrets:
-    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
-if "GOOGLE_CSE_ID" not in os.environ and hasattr(st, 'secrets') and "GOOGLE_CSE_ID" in st.secrets:
-    os.environ["GOOGLE_CSE_ID"] = st.secrets["GOOGLE_CSE_ID"]
+
+# Load secrets from Streamlit Cloud if available
+try:
+    if hasattr(st, 'secrets'):
+        if "DASHSCOPE_API_KEY" in st.secrets:
+            os.environ["DASHSCOPE_API_KEY"] = st.secrets["DASHSCOPE_API_KEY"]
+        if "GOOGLE_API_KEY" in st.secrets:
+            os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+        if "GOOGLE_CSE_ID" in st.secrets:
+            os.environ["GOOGLE_CSE_ID"] = st.secrets["GOOGLE_CSE_ID"]
+except Exception:
+    # Secrets not available, will use environment variables
+    pass
 
 # Configure page
 st.set_page_config(
