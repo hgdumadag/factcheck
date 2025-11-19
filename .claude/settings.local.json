@@ -7,7 +7,18 @@
       "Bash(del nul)",
       "Bash(rm:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(nul)",
+      "Bash(findstr:*)",
+      "Bash(python test_vision_api.py:*)",
+      "Bash(python -c:*)",
+      "Bash(chcp 65001)",
+      "Bash(python test_vision_simple.py:*)",
+      "Bash(.venvScriptspython.exe test_vision_simple.py)",
+      "Bash(venvScriptspython.exe test_vision_simple.py)",
+      "Bash(where:*)",
+      "Bash(\"D:\\Alibaba\\Fact_check2\\venv\\Scripts\\python.exe\" \"D:\\Alibaba\\Fact_check2\\test_vision_simple.py\")",
+      "Bash(\"D:\\Alibaba\\Fact_check2\\venv\\Scripts\\python.exe\":*)"
     ],
     "deny": [],
     "ask": []
